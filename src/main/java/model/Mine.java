@@ -33,7 +33,6 @@ public class Mine {
         if(!pickaxe.canMine(ore)){
             return 0;
         }
-        ore.decreaseAmount();
         return ore.getWeightPerTick();
     }
 
