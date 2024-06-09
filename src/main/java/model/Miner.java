@@ -1,5 +1,6 @@
 package model;
 
+import model.enums.OreType;
 import model.enums.PickaxeRarity;
 import java.time.Duration;
 
@@ -9,7 +10,10 @@ public class Miner implements Runnable{
     private int weight;
     private final Mine mine;
     private final Treasury treasury;
-    public Miner(Mine mine){
+    private final ThreadClock clock;
+
+    public Miner(Mine mine, ThreadClock clock){
+        this.clock = clock;
         this.treasury = Treasury.getInstance();
         this.pickaxe = new Tool(PickaxeRarity.IRON_PICKAXE);
         this.miningSpeed = this.pickaxe.getMiningSpeed();
@@ -18,25 +22,35 @@ public class Miner implements Runnable{
 
     @Override
     public void run() {
-        while(true) {
-            this.mine();
+        while (true) {
+            if (isWorkingHours()) {
+                mine();
 
-            if (this.weight >= 120 && this.weight <= 150) {
-                this.addMoney();
+                if (this.weight >= 120) {
+                    addMoney();
+                }
             }
         }
     }
 
+    private boolean isWorkingHours(){
+        if(this.clock.getHours() >= 8 && this.clock.getHours() < 20){
+            return true;
+        }
+        return false;
+    }
+
     private void mine(){
-        switch (this.mine.getOreType()){
-            case IRON:
-                if(this.pickaxe.getRarity() == PickaxeRarity.IRON_PICKAXE){
-                    this.mine.mineOre(this.weight);
-                    //add thread sleep based on mining speed
-                }
-                break;
-            case GOLD:
-            case DIAMOND:
+        try {
+            OreType oreType = this.mine.getOreType();
+
+            if (this.pickaxe.canMine(oreType)) {
+                this.mine.mineOre(this.weight);
+
+                Thread.sleep(Duration.ofMillis(miningSpeed).toMillis());
+            }
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -54,7 +68,8 @@ public class Miner implements Runnable{
     }
 
     public void upgradeTool(){
-        //this.pickaxe.upgradeRarity();
+        this.pickaxe.upgradeRarity();
+        this.miningSpeed = this.pickaxe.getMiningSpeed();
     }
 
 }

@@ -6,8 +6,7 @@ public class Mine {
     private Ore ore;
 
     public void generateOre(){
-        Ore ore = new Ore();
-        this.ore = ore;
+        this.ore = new Ore();
     }
 
     public OreType getOreType(){

@@ -1,27 +1,32 @@
 package model;
 
-import lombok.Data;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Getter
-@NoArgsConstructor
 public class Treasury {
-    private static Treasury instance;
+    private static volatile Treasury instance;
     private static int money = 0;
 
-    public Treasury(int money){
+    private Treasury(){
+        this(0);
+    }
+
+    private Treasury(int money){
         Treasury.money = money;
     }
 
     public static Treasury getInstance(){
         if(instance == null){
-            instance = new Treasury();
+            synchronized (Treasury.class){
+                if(instance == null){
+                    instance = new Treasury();
+                }
+            }
         }
         return instance;
     }
 
-    public void addMoney(int minerMoney){
+    public synchronized void addMoney(int minerMoney){
         money += minerMoney;
     }
 

@@ -1,4 +1,6 @@
-package org.example.models.enums;
+package model.enums;
+
+import model.enums.OreType;
 
 public enum PickaxeRarity {
     IRON_PICKAXE(10),
@@ -6,11 +8,16 @@ public enum PickaxeRarity {
     DIAMOND_PICKAXE(30);
 
     private final int miningSpeed;
-    PickaxeRarity(int miningSpeed){
+
+    PickaxeRarity(int miningSpeed) {
         this.miningSpeed = miningSpeed;
     }
 
-    public int getMiningSpeed(){
-        return this.miningSpeed;
+    public int getMiningSpeed() {
+        return miningSpeed;
+    }
+
+    public boolean canMine(OreType oreType) {
+        return this.ordinal() >= oreType.getRequiredRarity().ordinal();
     }
 }
