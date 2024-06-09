@@ -1,9 +1,6 @@
 package model;
 
-import org.example.models.Tool;
-import org.example.models.Treasury;
-import org.example.models.enums.PickaxeRarity;
-
+import model.enums.PickaxeRarity;
 import java.time.Duration;
 
 public class Miner implements Runnable{

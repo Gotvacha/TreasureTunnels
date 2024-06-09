@@ -1,4 +1,4 @@
-package org.example.models;
+package model;
 
 public class Shop {
 

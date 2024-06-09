@@ -1,6 +1,6 @@
-package org.example.models;
+package model;
 
-import org.example.models.enums.PickaxeRarity;
+import model.enums.PickaxeRarity;
 
 public class Tool {
     private PickaxeRarity rarity;
