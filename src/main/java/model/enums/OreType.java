@@ -10,7 +10,7 @@ public enum OreType {
     GOLD(130, PickaxeRarity.GOLD_PICKAXE),
     DIAMOND(135, PickaxeRarity.DIAMOND_PICKAXE);
 
-    private int weightPerTick;
+    private final int weightPerTick;
     private final PickaxeRarity requiredRarity;
     private static final Random PRNG = new Random();
 

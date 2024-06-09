@@ -34,6 +34,7 @@ public class Shop {
             Miner newMiner = new Miner(mine);
             miners.add(newMiner);
             new Thread(newMiner).start();
+            treasury.removeMoney(30);
         } else{
             throw new NotEnoughBalanceExpection();
         }
@@ -42,6 +43,7 @@ public class Shop {
     public void upgradeMinerTool(Miner miner) throws NotEnoughBalanceExpection {
         if(checkForBalance(10)){
             miner.upgradeTool();
+            treasury.removeMoney(10);
         } else{
             throw new NotEnoughBalanceExpection();
         }
@@ -51,6 +53,7 @@ public class Shop {
     public void upgradeMinerWeightThreshold(Miner miner) throws NotEnoughBalanceExpection {
         if(checkForBalance(10)) {
             miner.increaseWeightThreshold();
+            treasury.removeMoney(10);
         } else{
             throw new NotEnoughBalanceExpection();
         }
@@ -59,6 +62,7 @@ public class Shop {
     public void buyMoreSpace() throws NotEnoughBalanceExpection {
         if(checkForBalance(150)) {
             mine.addNumberOfActiveMiners(5);
+            treasury.removeMoney(150);
         } else{
             throw new NotEnoughBalanceExpection();
         }
@@ -69,6 +73,7 @@ public class Shop {
             for (Miner miner : miners) {
                 miner.hydrateForDay();
             }
+            treasury.removeMoney(100);
         }else{
             throw new NotEnoughBalanceExpection();
         }

@@ -29,7 +29,7 @@ public class Mine {
     }
 
     public int tryMineOre(Tool pickaxe){
-        OreType ore = OreType.IRON;
+        OreType ore = OreType.randomType();
         if(!pickaxe.canMine(ore)){
             return 0;
         }

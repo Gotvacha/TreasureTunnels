@@ -1,6 +1,5 @@
 package model;
 
-import model.enums.OreType;
 import model.enums.PickaxeRarity;
 import model.enums.Season;
 
