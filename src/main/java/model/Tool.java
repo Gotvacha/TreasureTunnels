@@ -11,19 +11,20 @@ public class Tool {
 
     public Tool(PickaxeRarity rarity){
         this.rarity = rarity;
+        miningSpeed = rarity.getMiningSpeed();
     }
 
     public boolean canMine(OreType oreType) {
-        return this.rarity.canMine(oreType);
+        return rarity.canMine(oreType);
     }
 
     public void upgradeRarity(){
         PickaxeRarity[] rarities = PickaxeRarity.values();
-        int currentIndex = this.rarity.ordinal();
+        int currentIndex = rarity.ordinal();
 
         if (currentIndex < rarities.length - 1) {
-            this.rarity = rarities[currentIndex + 1];
-            this.miningSpeed = this.rarity.getMiningSpeed();
+            rarity = rarities[currentIndex + 1];
+            miningSpeed = rarity.getMiningSpeed();
         } else {
             System.out.println("Cannot upgrade. Pickaxe is already at the highest rarity.");
         }
@@ -32,7 +33,7 @@ public class Tool {
     @Override
     public String toString() {
 
-        return "Pickaxe rarity: " + this.rarity.toString() + "\n"
-                + "Pickaxe mining speed: " + this.miningSpeed;
+        return "Pickaxe rarity: " + rarity.toString() + "\n"
+                + "Pickaxe mining speed: " + miningSpeed;
     }
 }

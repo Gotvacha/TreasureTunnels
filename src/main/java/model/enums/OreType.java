@@ -6,9 +6,9 @@ import java.util.Random;
 
 @Getter
 public enum OreType {
-    IRON(10, PickaxeRarity.IRON_PICKAXE),
-    GOLD(20, PickaxeRarity.GOLD_PICKAXE),
-    DIAMOND(40, PickaxeRarity.DIAMOND_PICKAXE);
+    IRON(125, PickaxeRarity.IRON_PICKAXE),
+    GOLD(130, PickaxeRarity.GOLD_PICKAXE),
+    DIAMOND(135, PickaxeRarity.DIAMOND_PICKAXE);
 
     private int weightPerTick;
     private final PickaxeRarity requiredRarity;

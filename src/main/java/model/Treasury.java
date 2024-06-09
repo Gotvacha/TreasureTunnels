@@ -30,4 +30,11 @@ public class Treasury {
         money += minerMoney;
     }
 
+    public int getBalance(){
+        return money;
+    }
+
+    public void removeMoney(int moneyToRemove){
+        money -= moneyToRemove;
+    }
 }

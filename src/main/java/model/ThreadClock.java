@@ -6,7 +6,7 @@ import lombok.*;
 @Getter
 public class ThreadClock extends Thread {
     private static final ThreadClock INSTANCE = new ThreadClock();
-    private final int HOUR = 5000;
+    private final int HOUR = 100;
 
     private int hours = 0;
     private int days = 0;
@@ -17,6 +17,7 @@ public class ThreadClock extends Thread {
     }
 
     public static ThreadClock getInstance() {
+
         return INSTANCE;
     }
 

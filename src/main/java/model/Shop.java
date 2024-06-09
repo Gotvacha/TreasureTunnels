@@ -1,6 +1,7 @@
 package model;
 
 import lombok.Getter;
+import model.errors.NotEnoughBalanceExpection;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,36 +24,51 @@ public class Shop {
         }
     }
 
-    public synchronized void addMiners() {
-        Miner newMiner = new Miner(mine);
-        miners.add(newMiner);
+    private boolean checkForBalance(int moneyRequired){
+        return moneyRequired <= treasury.getBalance();
 
-        new Thread(newMiner).start();
     }
 
-    public synchronized void upgradeMinerTool(Miner miner) {
-        miner.upgradeTool();
+    public void addMiners() throws NotEnoughBalanceExpection {
+        if(checkForBalance(30)){
+            Miner newMiner = new Miner(mine);
+            miners.add(newMiner);
+            new Thread(newMiner).start();
+        } else{
+            throw new NotEnoughBalanceExpection();
+        }
     }
 
-    public synchronized void upgradeMinerWeightThreshold(Miner miner) {
+    public void upgradeMinerTool(Miner miner) throws NotEnoughBalanceExpection {
+        if(checkForBalance(10)){
+            miner.upgradeTool();
+        } else{
+            throw new NotEnoughBalanceExpection();
+        }
+
+    }
+
+    public void upgradeMinerWeightThreshold(Miner miner) {
         miner.increaseWeightThreshold();
     }
 
-    public synchronized void buyMoreSpace() {
+    public void buyMoreSpace() {
         mine.addNumberOfActiveMiners(5);
     }
 
-    public synchronized void hydration() {
+    public void hydration() {
         for (Miner miner : miners) {
             miner.hydrateForDay();
         }
     }
 
-    public void printMiners() {
+    public String printMiners() {
         int i = 1;
+        StringBuilder sb = new StringBuilder();
         for (Miner miner : miners) {
-            System.out.println(i++ + " | " + miner.toString());
+            sb.append(i++).append(" | ").append(miner.toString());
         }
+        return sb.toString();
     }
 
 }

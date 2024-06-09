@@ -31,17 +31,18 @@ public class Miner implements Runnable{
     public void run() {
         while (true) {
             if (isWorkingHours()) {
+
                 this.hydrated = false;
                 boolean enteredMine = false;
                 try {
                     enteredMine = mine.tryEnterMine();
                     if (enteredMine) {
-                        while(isWorkingHours() && this.weight < weightThreshold){
+                        while(isWorkingHours() && weight < weightThreshold){
                             mine();
                         }
 
-                        if(this.weight > maxWeight){
-                            this.weight = maxWeight;
+                        if(weight > maxWeight){
+                            weight = maxWeight;
                         }
 
                         addMoney();
@@ -56,35 +57,28 @@ public class Miner implements Runnable{
                         mine.leaveMine();
                     }
                 }
-            } else {
-                try {
-                    Thread.sleep(Duration.ofMinutes(1).toMillis());
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                    throw new RuntimeException("Miner thread interrupted");
-                }
             }
         }
     }
 
     private boolean isWorkingHours(){
-        return this.clock.getHours() >= 9 && this.clock.getHours() < 17;
+        return clock.getHours() >= 9 && clock.getHours() < 17;
     }
 
     private void mine(){
         try {
             int adjustedMiningSpeed = getAdjustedMiningSpeed();
 
-            this.weight += this.mine.tryMineOre(this.pickaxe);
+            weight += mine.tryMineOre(pickaxe);
 
-            Thread.sleep(Duration.ofMillis(adjustedMiningSpeed).toMillis());
+            Thread.sleep(Duration.ofSeconds(adjustedMiningSpeed).toMillis());
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
     }
 
     private int getAdjustedMiningSpeed() {
-        int baseSpeed = this.pickaxe.getMiningSpeed();
+        int baseSpeed = 10 - pickaxe.getMiningSpeed();
         Season currentSeason = this.clock.getSeasons();
 
         if (currentSeason == Season.WINTER || currentSeason == Season.SUMMER) {
@@ -100,9 +94,9 @@ public class Miner implements Runnable{
     private void addMoney(){
         try{
             synchronized (this.treasury){
-                int moneyToAdd = this.weight * 5; // 1 weight = 5 money
-                this.treasury.addMoney(moneyToAdd);
-                this.weight = 0;
+                int moneyToAdd = weight * 5; // 1 weight = 5 money
+                treasury.addMoney(moneyToAdd);
+                weight = 0;
             }
             Thread.sleep(Duration.ofSeconds(5).toMillis());
         }catch (InterruptedException e){
@@ -111,24 +105,24 @@ public class Miner implements Runnable{
     }
 
     public void upgradeTool(){
-        this.pickaxe.upgradeRarity();
+        pickaxe.upgradeRarity();
     }
 
     public void increaseWeightThreshold() {
-        this.weightThreshold += 20;
+        weightThreshold += 20;
         maxWeight = weightThreshold + 35;
     }
 
     public void hydrateForDay(){
-        this.hydrated = true;
+        hydrated = true;
     }
 
     @Override
     public String toString() {
 
-        return  this.pickaxe.toString() + "\n" +
-                "Weight: " + this.weight + "\n" +
-                "Weight threshold: " + this.weightThreshold + "\n" +
+        return  pickaxe.toString() + "\n" +
+                "Weight: " + weight + "\n" +
+                "Weight threshold: " + weightThreshold + "\n" +
                 "Max weight: " + maxWeight + "\n";
     }
 
