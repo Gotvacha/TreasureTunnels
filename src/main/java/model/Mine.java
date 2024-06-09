@@ -2,13 +2,12 @@ package model;
 
 import lombok.Getter;
 import model.enums.OreType;
-import model.enums.PickaxeRarity;
 
 import java.util.concurrent.Semaphore;
 
 @Getter
 public class Mine {
-    private OreType ore; // may be array of OreType
+    private OreType ore; // may be array of OreType or may be deleted and only OreType used
     private final Semaphore semaphore;
 
     public Mine(int maxActiveMiners) {
@@ -29,13 +28,17 @@ public class Mine {
         semaphore.release();
     }
 
-    public int tryMineOre(PickaxeRarity rarity){
+    public int tryMineOre(Tool pickaxe){
         OreType ore = OreType.randomType();
-        if(!rarity.canMine(ore)){
+        if(!pickaxe.canMine(ore)){
             return 0;
         }
         ore.decreaseAmount();
         return ore.getWeightPerTick();
+    }
+
+    public void addNumberOfActiveMiners(int newMaxActiveMiners){
+        semaphore.release(newMaxActiveMiners - semaphore.availablePermits()); // or create new semaphore
     }
 
 }

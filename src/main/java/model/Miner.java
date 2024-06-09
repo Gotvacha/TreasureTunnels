@@ -9,34 +9,42 @@ import java.time.Duration;
 public class Miner implements Runnable{
     private Tool pickaxe;
     private int weight;
+    private int weightThreshold;
+    private static int maxWeight;
     private final Mine mine;
     private final Treasury treasury;
     private final ThreadClock clock;
-    private static final int WEIGHT_THRESHOLD = 120;
-    private static final int MAX_WEIGHT = 150;
+    private boolean hydrated;
+    private static final int BASE_WEIGHT_THRESHOLD = 120;
 
     public Miner(Mine mine){
         this.clock = ThreadClock.getInstance();
         this.treasury = Treasury.getInstance();
         this.pickaxe = new Tool(PickaxeRarity.IRON_PICKAXE);
         this.mine = mine;
+        this.weightThreshold = BASE_WEIGHT_THRESHOLD;
+        this.maxWeight = weightThreshold + 30;
+        this.hydrated = false;
     }
 
     @Override
     public void run() {
         while (true) {
             if (isWorkingHours()) {
+                this.hydrated = false;
                 boolean enteredMine = false;
                 try {
                     enteredMine = mine.tryEnterMine();
                     if (enteredMine) {
-                        mine();
-                        if (this.weight >= WEIGHT_THRESHOLD) {
-                            if(this.weight > MAX_WEIGHT){
-                                this.weight = MAX_WEIGHT;
-                            }
-                            addMoney();
+                        while(isWorkingHours() && this.weight < weightThreshold){
+                            mine();
                         }
+
+                        if(this.weight > maxWeight){
+                            this.weight = maxWeight;
+                        }
+
+                        addMoney();
                     } else {
                         Thread.sleep(Duration.ofSeconds(5).toMillis());
                     }
@@ -67,7 +75,7 @@ public class Miner implements Runnable{
         try {
             int adjustedMiningSpeed = getAdjustedMiningSpeed();
 
-            this.weight += this.mine.tryMineOre(this.pickaxe.getRarity());
+            this.weight += this.mine.tryMineOre(this.pickaxe);
 
             Thread.sleep(Duration.ofMillis(adjustedMiningSpeed).toMillis());
         } catch (InterruptedException e) {
@@ -81,6 +89,9 @@ public class Miner implements Runnable{
 
         if (currentSeason == Season.WINTER || currentSeason == Season.SUMMER) {
             baseSpeed *= 1.3; // multiplied so that when thread sleeps, it will be for longer duration
+        }
+        if (hydrated) {
+            baseSpeed /= 1.5; // 50% faster if hydrated
         }
 
         return baseSpeed;
@@ -101,6 +112,23 @@ public class Miner implements Runnable{
 
     public void upgradeTool(){
         this.pickaxe.upgradeRarity();
+    }
+
+    public void increaseWeightThreshold() {
+        this.weightThreshold += 20;
+        this.maxWeight = weightThreshold + 35;
+    }
+
+    public void hydrateForDay(){
+        this.hydrated = true;
+    }
+
+    @Override
+    public String toString() {
+        return  "pickaxe:" + pickaxe +
+                ", weight:" + weight +
+                ", weightThreshold:" + weightThreshold +
+                ", maxWeight:" + maxWeight;
     }
 
 }
