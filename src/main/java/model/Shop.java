@@ -1,10 +1,13 @@
 package model;
 
+import lombok.Getter;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class Shop {
     private final Mine mine;
+    @Getter
     private final List<Miner> miners;
     private final Treasury treasury;
 
@@ -52,7 +55,4 @@ public class Shop {
         }
     }
 
-    public List<Miner> getMiners() {
-        return miners;
-    }
 }

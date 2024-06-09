@@ -76,9 +76,4 @@ public class InputProcessor implements Runnable {
         }
     }
 
-    public static void main(String[] args) {
-        Shop shop = new Shop(5);
-        InputProcessor inputProcessor = new InputProcessor(shop);
-        new Thread(inputProcessor).start();
-    }
 }
