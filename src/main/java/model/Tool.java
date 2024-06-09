@@ -28,4 +28,11 @@ public class Tool {
             System.out.println("Cannot upgrade. Pickaxe is already at the highest rarity.");
         }
     }
+
+    @Override
+    public String toString() {
+
+        return "Pickaxe rarity: " + this.rarity.toString() + "\n"
+                + "Pickaxe mining speed: " + this.miningSpeed;
+    }
 }

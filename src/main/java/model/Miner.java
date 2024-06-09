@@ -7,7 +7,7 @@ import model.enums.Season;
 import java.time.Duration;
 
 public class Miner implements Runnable{
-    private Tool pickaxe;
+    private final Tool pickaxe;
     private int weight;
     private int weightThreshold;
     private static int maxWeight;
@@ -23,7 +23,7 @@ public class Miner implements Runnable{
         this.pickaxe = new Tool(PickaxeRarity.IRON_PICKAXE);
         this.mine = mine;
         this.weightThreshold = BASE_WEIGHT_THRESHOLD;
-        this.maxWeight = weightThreshold + 30;
+        maxWeight = weightThreshold + 30;
         this.hydrated = false;
     }
 
@@ -116,7 +116,7 @@ public class Miner implements Runnable{
 
     public void increaseWeightThreshold() {
         this.weightThreshold += 20;
-        this.maxWeight = weightThreshold + 35;
+        maxWeight = weightThreshold + 35;
     }
 
     public void hydrateForDay(){
@@ -125,10 +125,11 @@ public class Miner implements Runnable{
 
     @Override
     public String toString() {
-        return  "pickaxe:" + pickaxe +
-                ", weight:" + weight +
-                ", weightThreshold:" + weightThreshold +
-                ", maxWeight:" + maxWeight;
+
+        return  this.pickaxe.toString() + "\n" +
+                "Weight: " + this.weight + "\n" +
+                "Weight threshold: " + this.weightThreshold + "\n" +
+                "Max weight: " + maxWeight + "\n";
     }
 
 }
