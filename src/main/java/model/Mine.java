@@ -7,7 +7,7 @@ import java.util.concurrent.Semaphore;
 
 @Getter
 public class Mine {
-    private OreType ore; // may be array of OreType or may be deleted and only OreType used
+
     private final Semaphore semaphore;
 
     public Mine(int maxActiveMiners) {

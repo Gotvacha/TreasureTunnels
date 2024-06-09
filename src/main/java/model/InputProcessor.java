@@ -2,6 +2,7 @@ package model;
 
 import model.errors.NotEnoughBalanceExpection;
 
+import java.io.IOException;
 import java.util.Scanner;
 
 public class InputProcessor implements Runnable {
@@ -15,6 +16,7 @@ public class InputProcessor implements Runnable {
 
     @Override
     public void run() {
+
         while (true) {
             System.out.println("Current Hour: " + ThreadClock.getInstance().getHours());
             System.out.println("Current Balance: " + Treasury.getInstance().getBalance());
@@ -30,7 +32,7 @@ public class InputProcessor implements Runnable {
             System.out.print("choice: ");
             int choice = scanner.nextInt();
             scanner.nextLine();
-            try{
+            try {
                 switch (choice) {
                     case 1:
                         shop.addMiners();
@@ -62,11 +64,13 @@ public class InputProcessor implements Runnable {
                     default:
                         System.out.println("Invalid choice. Please try again.");
                 }
-            } catch(NotEnoughBalanceExpection e){
+            } catch (NotEnoughBalanceExpection e) {
                 System.out.println(e.getMessage());
             }
         }
     }
+
+
 
     private Miner chooseMiner() {
         System.out.println("Choose a miner by number:");

@@ -48,17 +48,29 @@ public class Shop {
 
     }
 
-    public void upgradeMinerWeightThreshold(Miner miner) {
-        miner.increaseWeightThreshold();
+    public void upgradeMinerWeightThreshold(Miner miner) throws NotEnoughBalanceExpection {
+        if(checkForBalance(10)) {
+            miner.increaseWeightThreshold();
+        } else{
+            throw new NotEnoughBalanceExpection();
+        }
     }
 
-    public void buyMoreSpace() {
-        mine.addNumberOfActiveMiners(5);
+    public void buyMoreSpace() throws NotEnoughBalanceExpection {
+        if(checkForBalance(150)) {
+            mine.addNumberOfActiveMiners(5);
+        } else{
+            throw new NotEnoughBalanceExpection();
+        }
     }
 
-    public void hydration() {
-        for (Miner miner : miners) {
-            miner.hydrateForDay();
+    public void hydration() throws NotEnoughBalanceExpection {
+        if(checkForBalance(100)) {
+            for (Miner miner : miners) {
+                miner.hydrateForDay();
+            }
+        }else{
+            throw new NotEnoughBalanceExpection();
         }
     }
 
