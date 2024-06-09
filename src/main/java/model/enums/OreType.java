@@ -21,6 +21,10 @@ public enum OreType {
         this.requiredRarity = requiredRarity;
     }
 
+    public void decreaseAmount() {
+        this.amount--;
+    }
+
     public static OreType randomType() {
         OreType[] oreTypes = values();
         return oreTypes[PRNG.nextInt(oreTypes.length)];

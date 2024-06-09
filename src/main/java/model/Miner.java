@@ -13,6 +13,7 @@ public class Miner implements Runnable{
     private final Treasury treasury;
     private final ThreadClock clock;
     private static final int WEIGHT_THRESHOLD = 120;
+    private static final int MAX_WEIGHT = 150;
 
     public Miner(Mine mine){
         this.clock = ThreadClock.getInstance();
@@ -25,10 +26,34 @@ public class Miner implements Runnable{
     public void run() {
         while (true) {
             if (isWorkingHours()) {
-                mine();
-
-                if (this.weight >= WEIGHT_THRESHOLD) {
-                    addMoney();
+                boolean enteredMine = false;
+                try {
+                    enteredMine = mine.tryEnterMine();
+                    if (enteredMine) {
+                        mine();
+                        if (this.weight >= WEIGHT_THRESHOLD) {
+                            if(this.weight > MAX_WEIGHT){
+                                this.weight = MAX_WEIGHT;
+                            }
+                            addMoney();
+                        }
+                    } else {
+                        Thread.sleep(Duration.ofSeconds(5).toMillis());
+                    }
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    break;
+                } finally {
+                    if (enteredMine) {
+                        mine.leaveMine();
+                    }
+                }
+            } else {
+                try {
+                    Thread.sleep(Duration.ofMinutes(1).toMillis());
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    throw new RuntimeException("Miner thread interrupted");
                 }
             }
         }
@@ -40,29 +65,25 @@ public class Miner implements Runnable{
 
     private void mine(){
         try {
-            OreType oreType = this.mine.getOreType();
+            int adjustedMiningSpeed = getAdjustedMiningSpeed();
 
-            if (this.pickaxe.canMine(oreType)) {
-                int adjustedMiningSpeed = getAdjustedMiningSpeed();
-                this.mine.mineOre(this.weight);
+            this.weight += this.mine.tryMineOre(this.pickaxe.getRarity());
 
-                Thread.sleep(Duration.ofMillis(adjustedMiningSpeed).toMillis());
-            }
+            Thread.sleep(Duration.ofMillis(adjustedMiningSpeed).toMillis());
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
     }
 
     private int getAdjustedMiningSpeed() {
-        int adjustedSpeed = this.pickaxe.getMiningSpeed();
+        int baseSpeed = this.pickaxe.getMiningSpeed();
         Season currentSeason = this.clock.getSeasons();
 
-        // Apply a 30% slowdown during winter or summer
         if (currentSeason == Season.WINTER || currentSeason == Season.SUMMER) {
-            adjustedSpeed -= adjustedSpeed * 0.3;
+            baseSpeed *= 1.3; // multiplied so that when thread sleeps, it will be for longer duration
         }
 
-        return adjustedSpeed;
+        return baseSpeed;
     }
 
     private void addMoney(){
