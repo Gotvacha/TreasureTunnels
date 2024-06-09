@@ -1,16 +1,26 @@
 package model;
 
+import model.enums.Season;
 import lombok.*;
 
-@Data
-@NoArgsConstructor
+@Getter
 public class ThreadClock extends Thread {
+    private static final ThreadClock INSTANCE = new ThreadClock();
+    private final int SECOND = 1000;
+
     private int seconds = 0;
     private int minutes = 0;
     private int hours = 0;
     private int days = 0;
+    private Season seasons = Season.SPRING;
 
-    public static int SECOND = 1000;
+    private ThreadClock() {
+        super();
+    }
+
+    public static ThreadClock getInstance() {
+        return INSTANCE;
+    }
 
     @Override
     public void run() {
@@ -26,6 +36,9 @@ public class ThreadClock extends Thread {
                         if (hours == 24) {
                             hours = 0;
                             days++;
+                            if (days % 10 == 0) {
+                                seasons = seasons.moveToNextSeason();
+                            }
                         }
                     }
                 }
