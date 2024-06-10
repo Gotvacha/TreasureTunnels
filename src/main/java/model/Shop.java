@@ -30,20 +30,20 @@ public class Shop {
     }
 
     public void addMiners() throws NotEnoughBalanceExpection {
-        if(checkForBalance(30)){
+        if(checkForBalance(300)){
             Miner newMiner = new Miner(mine);
             miners.add(newMiner);
             new Thread(newMiner).start();
-            treasury.removeMoney(30);
+            treasury.removeMoney(300);
         } else{
             throw new NotEnoughBalanceExpection();
         }
     }
 
     public void upgradeMinerTool(Miner miner) throws NotEnoughBalanceExpection {
-        if(checkForBalance(10)){
+        if(checkForBalance(100)){
             miner.upgradeTool();
-            treasury.removeMoney(10);
+            treasury.removeMoney(100);
         } else{
             throw new NotEnoughBalanceExpection();
         }
@@ -51,29 +51,29 @@ public class Shop {
     }
 
     public void upgradeMinerWeightThreshold(Miner miner) throws NotEnoughBalanceExpection {
-        if(checkForBalance(10)) {
+        if(checkForBalance(100)) {
             miner.increaseWeightThreshold();
-            treasury.removeMoney(10);
+            treasury.removeMoney(100);
         } else{
             throw new NotEnoughBalanceExpection();
         }
     }
 
     public void buyMoreSpace() throws NotEnoughBalanceExpection {
-        if(checkForBalance(150)) {
+        if(checkForBalance(1500)) {
             mine.addNumberOfActiveMiners(5);
-            treasury.removeMoney(150);
+            treasury.removeMoney(1500);
         } else{
             throw new NotEnoughBalanceExpection();
         }
     }
 
     public void hydration() throws NotEnoughBalanceExpection {
-        if(checkForBalance(100)) {
+        if(checkForBalance(1000)) {
             for (Miner miner : miners) {
                 miner.hydrateForDay();
             }
-            treasury.removeMoney(100);
+            treasury.removeMoney(1000);
         }else{
             throw new NotEnoughBalanceExpection();
         }

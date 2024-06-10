@@ -6,18 +6,26 @@ import java.io.IOException;
 import java.util.Scanner;
 
 public class InputProcessor implements Runnable {
-    private final Shop shop;
+    private Shop shop;
     private final Scanner scanner;
 
-    public InputProcessor(Shop shop) {
-        this.shop = shop;
+    public InputProcessor() {;
         this.scanner = new Scanner(System.in);
     }
 
     @Override
     public void run() {
+        ThreadClock clock = ThreadClock.getInstance();
+        System.out.println("Welcome!\nHow many workers do you want to start with?\nchoice:");
+        int startingMiners = scanner.nextInt();
+        scanner.nextLine();
+
+        clock.start();
+        this.shop = new Shop(startingMiners);
 
         while (true) {
+            System.out.println("Season: " + ThreadClock.getInstance().getSeasons());
+            System.out.println("Current Day: " + ThreadClock.getInstance().getDays());
             System.out.println("Current Hour: " + ThreadClock.getInstance().getHours());
             System.out.println("Current Balance: " + Treasury.getInstance().getBalance());
             System.out.println("What would you like to do?");
@@ -59,7 +67,8 @@ public class InputProcessor implements Runnable {
                         System.out.println(shop.printMiners());
                         break;
                     case 7:
-                        System.out.println("Exiting the shop.");
+                        System.out.println("Exiting the shop.\nYou are leaving the business with "
+                                + Treasury.getInstance().getBalance() + " coins.");
                         System.exit(0);
                     default:
                         System.out.println("Invalid choice. Please try again.");

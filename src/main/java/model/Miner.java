@@ -3,8 +3,6 @@ package model;
 import model.enums.PickaxeRarity;
 import model.enums.Season;
 
-import java.time.Duration;
-
 public class Miner implements Runnable{
     private final Tool pickaxe;
     private int weight;
@@ -30,7 +28,6 @@ public class Miner implements Runnable{
     public void run() {
         while (true) {
             if (isWorkingHours()) {
-
                 this.hydrated = false;
                 boolean enteredMine = false;
                 try {
@@ -46,7 +43,7 @@ public class Miner implements Runnable{
 
                         addMoney();
                     } else {
-                        Thread.sleep(Duration.ofSeconds(5).toMillis());
+                        Thread.sleep(500);
                     }
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
@@ -57,6 +54,12 @@ public class Miner implements Runnable{
                     }
                 }
             }
+            try{
+                Thread.sleep(2000);
+            }catch (InterruptedException e){
+                Thread.currentThread().interrupt();
+                break;
+            }
         }
     }
 
@@ -64,20 +67,20 @@ public class Miner implements Runnable{
         return clock.getHours() >= 9 && clock.getHours() < 17;
     }
 
-    private void mine(){
+    private synchronized void mine(){
         try {
             int adjustedMiningSpeed = getAdjustedMiningSpeed();
 
             weight += mine.tryMineOre(pickaxe);
 
-            Thread.sleep(Duration.ofSeconds(adjustedMiningSpeed).toMillis());
+            Thread.sleep(adjustedMiningSpeed);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
     }
 
     private int getAdjustedMiningSpeed() {
-        int baseSpeed = 10 - pickaxe.getMiningSpeed();
+        double baseSpeed = 1000 - pickaxe.getMiningSpeed();
         Season currentSeason = this.clock.getSeasons();
 
         if (currentSeason == Season.WINTER || currentSeason == Season.SUMMER) {
@@ -87,7 +90,7 @@ public class Miner implements Runnable{
             baseSpeed /= 1.5; // 50% faster if hydrated
         }
 
-        return baseSpeed;
+        return (int)baseSpeed;
     }
 
     private void addMoney(){
@@ -97,7 +100,7 @@ public class Miner implements Runnable{
                 treasury.addMoney(moneyToAdd);
                 weight = 0;
             }
-            Thread.sleep(Duration.ofSeconds(5).toMillis());
+            Thread.sleep(1000);
         }catch (InterruptedException e){
             throw new RuntimeException("Race condition during adding money");
         }

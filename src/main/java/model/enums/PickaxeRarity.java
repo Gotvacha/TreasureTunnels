@@ -3,9 +3,9 @@ package model.enums;
 import model.enums.OreType;
 
 public enum PickaxeRarity {
-    IRON_PICKAXE(2),
-    GOLD_PICKAXE(4),
-    DIAMOND_PICKAXE(6);
+    IRON_PICKAXE(0),
+    GOLD_PICKAXE(250),
+    DIAMOND_PICKAXE(500);
 
     private final int miningSpeed;
 
